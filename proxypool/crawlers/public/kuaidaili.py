@@ -37,11 +37,6 @@ class KuaidailiCrawler(BaseCrawler):
         else:
             print("未找到 fpsList 数据")
 
-        # for item in fps_list:
-        #     td_ip = item.find('td:nth-child(1)').text()
-        #     td_port = item.find('td:nth-child(2)"]').text()
-        #     if td_ip and td_port:
-        # #         yield Proxy(host=td_ip, port=td_port)
 
 
 if __name__ == '__main__':

@@ -64,15 +64,15 @@ PROXY_NUMBER_MAX = 50000
 PROXY_NUMBER_MIN = 0
 
 # definition of tester cycle, it will test every CYCLE_TESTER second
-CYCLE_TESTER = env.int('CYCLE_TESTER', )
+CYCLE_TESTER = env.int('CYCLE_TESTER', 3600)
 # definition of getter cycle, it will get proxy every CYCLE_GETTER second
 CYCLE_GETTER = env.int('CYCLE_GETTER', 3600)
-GET_TIMEOUT = env.int('GET_TIMEOUT', 20)
+GET_TIMEOUT = env.int('GET_TIMEOUT', 10)
 
 # definition of tester
 TEST_URL = env.str('TEST_URL', 'https://www.baidu.com')
-TEST_TIMEOUT = env.int('TEST_TIMEOUT', 20)
-TEST_BATCH = env.int('TEST_BATCH', 20)
+TEST_TIMEOUT = env.int('TEST_TIMEOUT', 10)
+TEST_BATCH = env.int('TEST_BATCH', 10)
 # only save anonymous proxy
 TEST_ANONYMOUS = env.bool('TEST_ANONYMOUS', True)
 # TEST_HEADERS = env.json('TEST_HEADERS', {
