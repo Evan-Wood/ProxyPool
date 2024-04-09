@@ -2,7 +2,7 @@ from proxypool.schemas.proxy import Proxy
 from proxypool.crawlers.base import BaseCrawler
 from pyquery import PyQuery as pq
 
-BaseUrl = 'http://www.taiyanghttp.com/free/page{num}'
+BaseUrl = 'http://ip.tyhttp.com/{num}'
 MAX_PAGE = 3
 
 
@@ -18,10 +18,10 @@ class TaiyangdailiCrawler(BaseCrawler):
         :return:
         """
         doc = pq(html)
-        trs = doc('#ip_list .tr.ip_tr').items()
+        trs = doc('div.list').items()
         for tr in trs:
-            host = tr.find('div:nth-child(1)').text()
-            port = tr.find('div:nth-child(2)').text()
+            host = tr.find('div.td.td-4').text()
+            port = tr.find('div.td.td-2').text()[0:4]
             yield Proxy(host=host, port=port)
 
 
