@@ -41,9 +41,9 @@ class BaseCrawler(object):
                 html = self.fetch(url)
                 if not html:
                     continue
-                time.sleep(.5)
+                time.sleep(0.5)
                 yield from self.process(html, url)
         except RetryError:
             logger.error(
-                f'crawler {self} crawled proxy unsuccessfully, '
+                f'crawler {self.urls} crawled proxy unsuccessfully, '
                 'please check if target url is valid or network issue')

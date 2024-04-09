@@ -37,7 +37,7 @@ class Tester(object):
     async def test(self, proxy: Proxy):
         """
         test single proxy
-        :param proxy: Proxy object
+        :param proxy
         :return:
         """
         async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(ssl=False)) as session:
@@ -59,13 +59,13 @@ class Tester(object):
                                        allow_redirects=False) as response:
                     if response.status in TEST_VALID_STATUS:
                         if TEST_DONT_SET_MAX_SCORE:
-                            logger.debug(f'proxy {proxy.string()} is valid, remain current score')
+                            logger.info(f'proxy {proxy.string()} is valid, remain current score')
                         else:
                             self.redis.max(proxy)
-                            logger.debug(f'proxy {proxy.string()} is valid, set max score')
+                            logger.info(f'proxy {proxy.string()} is valid, set max score')
                     else:
                         self.redis.decrease(proxy)
-                        logger.debug(f'proxy {proxy.string()} is invalid, decrease score')
+                        logger.error(f'proxy {proxy.string()} is invalid, decrease score')
                 # if independent tester class found, create new set of storage and do the extra test
                 for tester in self.testers:
                     key = tester.key
@@ -86,14 +86,15 @@ class Tester(object):
                                 else:
                                     self.redis.max(proxy, key, tester.proxy_score_max)
                                     logger.info(f'key[{key}] proxy {proxy.string()} is valid, set max score')
+
                             else:
                                 self.redis.decrease(proxy, tester.key, tester.proxy_score_min)
-                                logger.info(f'key[{key}] proxy {proxy.string()} is invalid, decrease score')
+                                logger.error(f'key[{key}] proxy {proxy.string()} is invalid, decrease score')
 
             except EXCEPTIONS:
                 self.redis.decrease(proxy)
                 [self.redis.decrease(proxy, tester.key, tester.proxy_score_min) for tester in self.testers]
-                logger.debug(f'proxy {proxy.string()} is invalid, decrease score')
+                logger.error(f'proxy {proxy.string()} is invalid, decrease score')
 
     @logger.catch
     def run(self):
