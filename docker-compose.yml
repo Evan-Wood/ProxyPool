@@ -1,10 +1,18 @@
 version: "3"
 services:
-  redis:
-    image: redis:7.0.12
-    container_name: redis
-    ports:
-      - "6374:6379"
+#  redis:
+#    image: redis:7.0.12
+#    restart: always
+#    container_name: redis_1
+#    ports:
+#      - "6379:6379"
+#    volumes:
+#      - ./data:/data
+#      - ./conf:/etc/conf
+#    command: redis-server /etc/conf/redis.conf
+#    environment:
+#      - TZ=Asia/Shanghai
+#    privileged: true
   proxypool:
     image: "germey/proxypool:master"
     container_name: proxypool
