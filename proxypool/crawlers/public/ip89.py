@@ -2,7 +2,7 @@ from proxypool.schemas.proxy import Proxy
 from proxypool.crawlers.base import BaseCrawler
 import re
 
-MAX_NUM = 999
+MAX_NUM = 900
 BASE_URL = 'http://api.89ip.cn/tqdl.html?api=1&num={MAX_NUM}&port=&address=&isp='.format(MAX_NUM=MAX_NUM)
 
 

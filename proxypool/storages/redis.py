@@ -1,3 +1,5 @@
+import datetime
+
 import redis
 from proxypool.exceptions import PoolEmptyException
 from proxypool.schemas.proxy import Proxy
@@ -42,12 +44,18 @@ class RedisClient(object):
         :return: result
         """
         if not is_valid_proxy(f'{proxy.host}:{proxy.port}'):
-            logger.info(f'invalid proxy {proxy}, throw it')
+            logger.debug(f'invalid proxy {proxy}, throw it')
             return
+        # 设置创建时间为当前时间，如果未提供
+        created_at = datetime.datetime.now()
+        update_at = datetime.datetime.now()
         if not self.exists(proxy, redis_key):
-            if IS_REDIS_VERSION_2:
-                return self.db.zadd(redis_key, score, proxy.string())
-            return self.db.zadd(redis_key, {proxy.string(): score})
+            # 生成代理信息字符串
+            proxy_info = f"{proxy.string()}"
+            # 使用 ZADD 将代理信息添加到有序集合中
+            self.db.zadd(redis_key, {proxy_info: score})
+            # 使用 HMSET 将额外信息存储为 Hash 类型
+            self.db.hmset(proxy.string(), {'created_at': created_at, 'update_at': update_at})
 
     def random(self, redis_key=REDIS_KEY, proxy_score_min=PROXY_SCORE_MIN, proxy_score_max=PROXY_SCORE_MAX) -> Proxy:
         """
@@ -85,6 +93,9 @@ class RedisClient(object):
         if score <= proxy_score_min:
             logger.info(f'{proxy.string()} current score {score}, remove')
             self.db.zrem(redis_key, proxy.string())
+        elif 11 < score < 90:
+            logger.info(f'{proxy.string()} current score {score}, remove')
+            self.db.zrem(redis_key, proxy.string())
 
     def exists(self, proxy: Proxy, redis_key=REDIS_KEY) -> bool:
         """
@@ -100,7 +111,7 @@ class RedisClient(object):
         :param proxy: proxy
         :return: new score
         """
-        logger.info(f'{proxy.string()} is valid, set to {proxy_score_max}')
+        logger.debug(f'{proxy.string()} is valid, set to {proxy_score_max}')
         if IS_REDIS_VERSION_2:
             return self.db.zadd(redis_key, proxy_score_max, proxy.string())
         return self.db.zadd(redis_key, {proxy.string(): proxy_score_max})
